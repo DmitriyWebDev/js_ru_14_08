@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { saveComment } from '../../AC'
+import {connect} from 'react-redux'
 import './style.css'
 
 class CommentForm extends Component {
@@ -11,7 +13,13 @@ class CommentForm extends Component {
         text: ''
     }
 
+
+
     render() {
+
+        console.log('Form Render')
+        console.log(this.props)
+
         return (
             <form onSubmit = {this.handleSubmit}>
                 user: <input value = {this.state.user}
@@ -27,6 +35,21 @@ class CommentForm extends Component {
 
     handleSubmit = ev => {
         ev.preventDefault()
+
+        console.log( "handleSubmit" )
+
+        const {saveComment, articleId} = this.props
+        const {user,text} = this.state
+
+        const data = {
+            articleId : articleId,
+            id: '',
+            user : user,
+            text : text
+        }
+
+        saveComment(data)
+
         this.setState({
             user: '',
             text: ''
@@ -56,4 +79,8 @@ const limits = {
     }
 }
 
-export default CommentForm
+// export default connect(null, (dispatch, ownProps) => ({
+//     saveComment: () => dispatch(saveComment(ownProps))
+// }))(CommentForm)
+
+export default connect(null, { saveComment })(CommentForm)
