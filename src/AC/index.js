@@ -1,4 +1,7 @@
-import {INCREMENT, DELETE_ARTICLE, CHANGE_DATE_RANGE, CHANGE_SELECTION, SAVE_COMMENT, ADD_COMMENT_TO_ARTICLE} from '../constants'
+import {
+    INCREMENT, DELETE_ARTICLE, CHANGE_DATE_RANGE, CHANGE_SELECTION, ADD_COMMENT, LOAD_ALL_ARTICLES, LOAD_ARTICLE,
+    START, SUCCESS, FAIL
+} from '../constants'
 
 export function increment() {
     return {
@@ -27,27 +30,49 @@ export function changeSelection(selected) {
     }
 }
 
-export function saveComment(commentData) {
-
-    console.log( 'AC saveComment()' )
-    console.log( commentData )
-
+export function addComment(comment, articleId) {
     return {
-        type: SAVE_COMMENT,
-        payload: {
-            articleId: commentData['articleId'],
-            id : '',
-            user: commentData['user'],
-            text: commentData['text']
-        }
+        type: ADD_COMMENT,
+        payload: { comment, articleId },
+        generateId: true
     }
 }
 
-export function addCommentToArticle(articlesWithNewComment) {
+export function loadAllArticles() {
     return {
-        type: ADD_COMMENT_TO_ARTICLE,
-        payload: {
-            articles : articlesWithNewComment
-        }
+        type: LOAD_ALL_ARTICLES,
+        callAPI: '/api/article'
+    }
+}
+
+/*
+export function loadArticleById(id) {
+    return {
+        type: LOAD_ARTICLE,
+        callAPI: `/api/article/${id}`
+    }
+}*/
+
+export function loadArticleById(id) {
+    return (dispatch) => {
+        dispatch({
+            type: LOAD_ARTICLE + START,
+            payload: { id }
+        })
+
+        setTimeout(() => {
+            fetch(`/api/article/${id}`)
+                .then(res => res.json())
+                .then(response => dispatch({
+                    type: LOAD_ARTICLE + SUCCESS,
+                    payload: { id },
+                    response
+                }))
+                .catch(error => dispatch({
+                    type: LOAD_ARTICLE + FAIL,
+                    payload: { id },
+                    error
+                }))
+        }, 1000)
     }
 }
