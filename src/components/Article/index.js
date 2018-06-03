@@ -72,6 +72,8 @@ class Article extends PureComponent {
 
         if (article.loading) return <Loader />
 
+        console.log(  )
+
         return (
             <div>
                 <p>{this.props.article.text}</p>

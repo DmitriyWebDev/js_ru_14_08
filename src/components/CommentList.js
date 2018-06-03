@@ -3,6 +3,9 @@ import Comment from './Comment'
 import toggleOpen from '../decorators/toggleOpen'
 import CommentForm from './CommentForm'
 import PropTypes from 'prop-types'
+import {connect} from 'react-redux'
+import { loadCommentsByArticleId } from '../AC'
+import Loader from './Loader'
 
 class CommentList extends Component {
     static defaultProps = {
@@ -11,16 +14,19 @@ class CommentList extends Component {
         toggleOpen: PropTypes.func
     }
 
-    componentDidMount() {
-        console.log('---', 'mounted')
-    }
+    componentWillReceiveProps(newProps) {
 
-    componentWillUnmount() {
-        console.log('---', 'unmounting')
-    }
 
-    componentDidUpdate() {
-        console.log('---', 'updated')
+        const { isOpen, article, loadComments } = newProps
+        console.log( 'CommentList new props' )
+        console.log( article )
+        console.log( article.commentsIsLoading )
+        console.log( article.commentsIsLoaded )
+
+        if( !this.props.isOpen && isOpen && !article.commentsIsLoading && !article.commentsIsLoaded ) {
+            loadComments( article.id );
+        }
+
     }
 
     render() {
@@ -35,8 +41,13 @@ class CommentList extends Component {
     }
 
     getBody() {
-        const { article: {id, comments = []}, isOpen } = this.props
+        const { article: {id, comments = [], commentsIsLoading, commentsIsLoaded}, isOpen } = this.props
         if (!isOpen) return null
+
+        if (commentsIsLoading) return <Loader/>
+
+        if (!commentsIsLoaded) return null
+
 
         const body = comments.length ? (
             <ul>
@@ -54,4 +65,10 @@ class CommentList extends Component {
 }
 
 
-export default toggleOpen(CommentList)
+//export default toggleOpen(CommentList)
+
+export default connect(null, (dispatch, ownProps) => ({
+    loadComments: () => dispatch(loadCommentsByArticleId(ownProps.article.id))
+}))(toggleOpen(CommentList))
+
+//export default connect(null, { loadComments })(toggleOpen(CommentList))
