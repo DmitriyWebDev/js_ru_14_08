@@ -2,10 +2,10 @@ import React, {Component} from 'react'
 import Comment from './Comment'
 import toggleOpen from '../decorators/toggleOpen'
 import CommentForm from './CommentForm'
+import Loader from './Loader'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
-import { loadCommentsByArticleId } from '../AC'
-import Loader from './Loader'
+import {loadArticleComments} from '../AC'
 
 class CommentList extends Component {
     static defaultProps = {
@@ -13,20 +13,10 @@ class CommentList extends Component {
         isOpen: PropTypes.bool,
         toggleOpen: PropTypes.func
     }
-
-    componentWillReceiveProps(newProps) {
-
-
-        const { isOpen, article, loadComments } = newProps
-        console.log( 'CommentList new props' )
-        console.log( article )
-        console.log( article.commentsIsLoading )
-        console.log( article.commentsIsLoaded )
-
-        if( !this.props.isOpen && isOpen && !article.commentsIsLoading && !article.commentsIsLoaded ) {
-            loadComments( article.id );
+    componentWillReceiveProps({ isOpen, article, loadArticleComments }) {
+        if (!this.props.isOpen && isOpen && !article.commentsLoading && !article.commentsLoaded) {
+            loadArticleComments(article.id)
         }
-
     }
 
     render() {
@@ -41,13 +31,10 @@ class CommentList extends Component {
     }
 
     getBody() {
-        const { article: {id, comments = [], commentsIsLoading, commentsIsLoaded}, isOpen } = this.props
+        const { article: {comments, id, commentsLoading, commentsLoaded}, isOpen } = this.props
         if (!isOpen) return null
-
-        if (commentsIsLoading) return <Loader/>
-
-        if (!commentsIsLoaded) return null
-
+        if (commentsLoading) return <Loader />
+        if (!commentsLoaded) return null
 
         const body = comments.length ? (
             <ul>
@@ -65,10 +52,4 @@ class CommentList extends Component {
 }
 
 
-//export default toggleOpen(CommentList)
-
-export default connect(null, (dispatch, ownProps) => ({
-    loadComments: () => dispatch(loadCommentsByArticleId(ownProps.article.id))
-}))(toggleOpen(CommentList))
-
-//export default connect(null, { loadComments })(toggleOpen(CommentList))
+export default connect(null, { loadArticleComments })(toggleOpen(CommentList))

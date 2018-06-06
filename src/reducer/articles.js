@@ -1,8 +1,4 @@
-import {
-    DELETE_ARTICLE, ADD_COMMENT, LOAD_ALL_ARTICLES,
-    LOAD_ARTICLE, SUCCESS, START,
-    LOAD_COMMENTS_FOR_ARTICLE
-} from '../constants'
+import { DELETE_ARTICLE, ADD_COMMENT, LOAD_ALL_ARTICLES, LOAD_ARTICLE, LOAD_ARTICLE_COMMENTS, SUCCESS, START } from '../constants'
 import {arrToMap} from './utils'
 import {Map, fromJS, Record} from 'immutable'
 
@@ -13,8 +9,8 @@ const ArticleRecord = Record({
     date: null,
     loading: false,
     comments: [],
-    commentsIsLoading : false,
-    commentsIsLoaded  : false,
+    commentsLoading: false,
+    commentsLoaded: false
 })
 
 const ReducerRecord = Record({
@@ -48,17 +44,15 @@ export default (state = defaultState, action) => {
             return state.setIn(['entities', payload.id, 'loading'], true)
 
         case LOAD_ARTICLE + SUCCESS:
-            console.log( new ArticleRecord(response) )
             return state.setIn(['entities', payload.id], new ArticleRecord(response))
 
-        case LOAD_COMMENTS_FOR_ARTICLE + START:
-            return state.setIn(['entities', payload.id, 'commentsIsLoading'], true)
-                .setIn(['entities', payload.id, 'commentsIsLoaded'], false)
+        case LOAD_ARTICLE_COMMENTS + START:
+            return state.setIn(['entities', payload.articleId, 'commentsLoading'], true)
 
-        case LOAD_COMMENTS_FOR_ARTICLE + SUCCESS:
-            return state.setIn(['entities', payload.id, 'commentsIsLoading'], false)
-                .setIn(['entities', payload.id, 'commentsIsLoaded'], true)
-
+        case LOAD_ARTICLE_COMMENTS + SUCCESS:
+            return state
+                .setIn(['entities', payload.articleId, 'commentsLoading'], false)
+                .setIn(['entities', payload.articleId, 'commentsLoaded'], true)
     }
 
     return state
