@@ -11,6 +11,7 @@ export default store => next => action => {
     })
 
 
+
     //dev only!!!!
     setTimeout(() => fetch(callAPI)
         .then(res => res.json())
