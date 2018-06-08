@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import MenuItem from './MenuItem'
+import {getTranslatedText} from '../../reducer/utils'
 
 class Menu extends Component {
     static propTypes = {
@@ -8,17 +9,19 @@ class Menu extends Component {
     };
 
     static contextTypes = {
-        store: PropTypes.object,
-        router: PropTypes.object,
-        user: PropTypes.string
+        user: PropTypes.string,
+        lang: PropTypes.string,
+        dictionary: PropTypes.object
     }
 
     render() {
-        console.log('context', this.context)
+
+        const {dictionary, lang} = this.context
+
         return (
             <div>
-                <h2>User: {this.context.user}</h2>
-                <h3>Menu:</h3>
+                <h2>{getTranslatedText('User', dictionary, lang )}: {this.context.user}</h2>
+                <h3>{getTranslatedText('Menu', dictionary, lang )}:</h3>
                 <div>
                     {this.props.children}
                 </div>

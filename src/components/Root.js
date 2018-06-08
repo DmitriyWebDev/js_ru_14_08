@@ -7,10 +7,17 @@ import CommentsPage from './Routes/CommentsPage'
 import {Route, Link, NavLink, Switch, Redirect} from 'react-router-dom'
 import NotFoundPage from './Routes/NotFoundPage'
 import Menu, { MenuItem } from './Menu'
+import LangSwitcher from './LangSwitcher'
+import {getTranslatedText} from '../reducer/utils'
 
 export default class Root extends Component {
     state = {
         username: ''
+    }
+
+    static contextTypes = {
+        lang: PropTypes.string,
+        dictionary: PropTypes.object
     }
 
     static childContextTypes = {
@@ -19,22 +26,26 @@ export default class Root extends Component {
 
     getChildContext() {
         return {
-            user: this.state.username
+            user: this.state.username,
         }
     }
 
     render() {
         console.log('---', 1)
+
+        const {dictionary, lang} = this.context
+
         return (
             <div>
-                <h2>Menu</h2>
+                <h2>{getTranslatedText('Menu', dictionary, lang )}</h2>
+                <LangSwitcher currentLang = {lang} handleUserLanguage = {this.props.handleUserLanguage} />
                 <Menu>
                     <MenuItem link="counter" />
                     <MenuItem link="articles" />
                     <MenuItem link="filters" />
                 </Menu>
                 <div>
-                    <h1>News App</h1>
+                    <h1>{getTranslatedText('News App', dictionary, lang )}</h1>
                     <UserForm value = {this.state.username} onChange = {this.handleUserChange}/>
                     <Switch>
                         <Redirect from="/" exact to="/articles" />
@@ -53,7 +64,7 @@ export default class Root extends Component {
 
     }
 
-    handleUserChange = (username) => this.setState({ username })
+    handleUserChange   = (username) => this.setState({ username })
 
     getArticleForm = () => <h2>New Article form</h2>
 }

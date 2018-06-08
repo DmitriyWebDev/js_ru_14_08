@@ -1,4 +1,5 @@
 import React, {Component} from 'react'
+import Translator from './components/Translator'
 import Root from './components/Root'
 import {Provider} from 'react-redux'
 import {ConnectedRouter} from 'react-router-redux'
@@ -10,7 +11,9 @@ export default class App extends Component {
         return (
             <Provider store = {store}>
                 <ConnectedRouter history = {history}>
-                    <Root />
+                    <Translator>
+                        <Root />
+                    </Translator>
                 </ConnectedRouter>
             </Provider>
         )

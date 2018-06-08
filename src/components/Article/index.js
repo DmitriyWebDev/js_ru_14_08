@@ -7,6 +7,7 @@ import CSSTransion from 'react-addons-css-transition-group'
 import './style.css'
 import {connect} from 'react-redux'
 import {deleteArticle, loadArticleById} from '../../AC'
+import {getTranslatedText} from '../../reducer/utils'
 
 class Article extends Component {
     static propTypes = {
@@ -18,6 +19,11 @@ class Article extends Component {
         }),
         isOpen: PropTypes.bool,
         toggleOpen: PropTypes.func
+    }
+
+    static contextTypes = {
+        lang: PropTypes.string,
+        dictionary: PropTypes.object
     }
 
     componentDidMount() {
@@ -33,13 +39,16 @@ class Article extends Component {
 
     render() {
         const {article, toggleOpen, deleteArticle} = this.props
+        const {dictionary, lang} = this.context
         console.log('---', 3)
         if (!article) return null
 
         return (
             <div ref={this.setContainerRef}>
                 <h3 onClick = {toggleOpen}>{article.title}</h3>
-                <button onClick={deleteArticle}>delete me</button>
+                <button onClick={deleteArticle}>
+                    {getTranslatedText('delete me', dictionary, lang )}
+                </button>
                 <CSSTransion
                     transitionName="article"
                     transitionEnterTimeout={500}

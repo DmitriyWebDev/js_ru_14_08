@@ -6,6 +6,7 @@ import Loader from './Loader'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import {loadArticleComments} from '../AC'
+import {getTranslatedText} from '../reducer/utils'
 
 class CommentList extends Component {
     static defaultProps = {
@@ -15,7 +16,9 @@ class CommentList extends Component {
     }
 
     static contextTypes = {
-        user: PropTypes.string
+        user: PropTypes.string,
+        lang: PropTypes.string,
+        dictionary: PropTypes.object
     }
 
     componentWillReceiveProps({ isOpen, article, loadArticleComments }) {
@@ -25,8 +28,13 @@ class CommentList extends Component {
     }
 
     render() {
+        const {dictionary, lang} = this.context
         const {isOpen, toggleOpen} = this.props
-        const text = isOpen ? 'hide comments' : 'show comments'
+
+        const hideText = getTranslatedText('hide comments', dictionary, lang )
+        const showText = getTranslatedText('show comments', dictionary, lang )
+
+        const text = isOpen ? hideText : showText
         console.log('---', 4)
         return (
             <div>
