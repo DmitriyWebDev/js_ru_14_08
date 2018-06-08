@@ -35,8 +35,11 @@ export default (state = defaultState, action) => {
             return state.set('loading', true)
 
         case LOAD_ALL_ARTICLES + SUCCESS:
+
+            const newEntities = arrToMap(response, ArticleRecord).merge(state['entities']);
+
             return state
-                .set('entities', arrToMap(response, ArticleRecord))
+                .set('entities', newEntities)
                 .set('loading', false)
                 .set('loaded', true)
 

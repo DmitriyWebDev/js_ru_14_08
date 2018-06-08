@@ -55,4 +55,4 @@ export default withRouter(connect(state => {
         loading: state.articles.loading,
         loaded: state.articles.loaded,
     }
-}, {loadAllArticles})(accordion(ArticleList)))
+}, {loadAllArticles}, null, {pure: false})(accordion(ArticleList)))

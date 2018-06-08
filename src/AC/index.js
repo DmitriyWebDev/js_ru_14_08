@@ -62,6 +62,9 @@ export function loadArticleComments(articleId) {
 }
 
 export function loadArticleById(id) {
+
+    console.log( 'loadArticleById()' )
+
     return (dispatch, getState) => {
         const article = getState().articles.entities.get(id)
         if (article && article.text) return

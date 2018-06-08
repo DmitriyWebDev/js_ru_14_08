@@ -13,7 +13,7 @@ class Article extends Component {
         id: PropTypes.string.isRequired,
         article: PropTypes.shape({
             id: PropTypes.string,
-            title: PropTypes.string.isRequired,
+            title: PropTypes.string,
             text: PropTypes.string
         }),
         isOpen: PropTypes.bool,
